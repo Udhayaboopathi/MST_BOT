@@ -1,0 +1,36 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": "14.x"
+  },
+  "keywords": [
+    "samp",
+    "query",
+    "util",
+    "tool"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/builders": "^1.6.5",
+    "@discordjs/rest": "^2.2.0",
+    "@types/node": "^18.0.6",
+    "ascii-table": "^0.0.9",
+    "discord-api-types": "^0.37.58",
+    "discord.js": "^14.14.1",
+    "express": "^4.19.2",
+    "minecraft-server-util": "^5.4.4",
+    "moment": "^2.29.4",
+    "ms": "^2.1.3",
+    "node-fetch": "^3.2.6",
+    "nodemon": "^3.1.3",
+    "rcon-client": "^4.2.4",
+    "samp-query": "^0.1.5"
+  },
+  "description": ""
+}
