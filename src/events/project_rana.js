@@ -3,12 +3,11 @@ const samp = require("samp-query");
 const trackedPlayers = ["Rana_Dev"];
 const serverOptions = {
   KDM: { host: "148.113.8.240", port: 1111 },
-  IURP: { host: "51.79.144.255", port: 7777 },
-  ACRP: { host: "103.214.23.55", port: 7788 },
-  Legendary_RP: { host: "103.214.23.55", port: 7782 },
+  IURP: { host: "15.235.141.203", port: 7777 },
+  ACRP: { host: "15.235.209.107", port: 7788 },
 };
-const channelId = "1254368096093863987"; // Replace with your channel ID
-const checkInterval = 1000; // Check every minute (in milliseconds)
+const channelId = "1254368096093863987";
+const checkInterval = 1000;
 let previousPlayers = {
   KDM: new Set(),
   IURP: new Set(),
@@ -21,7 +20,6 @@ async function checkServer(serverKey, client) {
 
   samp(options, (error, query) => {
     if (error) {
-      // console.error(`Error querying ${serverKey}: ${error}`);
       return;
     }
 
@@ -33,7 +31,6 @@ async function checkServer(serverKey, client) {
         previousPlayers[serverKey].has(trackedPlayer);
 
       if (isTrackedPlayerOnline && !wasTrackedPlayerOnline) {
-        // Player has come online
         const channel = client.channels.cache.get(channelId);
         if (channel) {
           channel.send(
@@ -41,7 +38,6 @@ async function checkServer(serverKey, client) {
           );
         }
       } else if (!isTrackedPlayerOnline && wasTrackedPlayerOnline) {
-        // Player has gone offline
         const channel = client.channels.cache.get(channelId);
         if (channel) {
           channel.send(`**${trackedPlayer}** தா*** ஓடிட்டான்டா .`);
@@ -49,7 +45,6 @@ async function checkServer(serverKey, client) {
       }
     });
 
-    // Update previousPlayers to currentPlayers for next comparison
     previousPlayers[serverKey] = currentPlayers;
   });
 }

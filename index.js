@@ -1,6 +1,3 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const path = require("path");
 const {
   Client,
   Collection,
@@ -27,7 +24,6 @@ const client = new Client({
     GatewayIntentBits.DirectMessageReactions,
     GatewayIntentBits.DirectMessageTyping,
     GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers,
   ],
   shards: "auto",
   partials: [
@@ -46,9 +42,6 @@ const moment = require("moment");
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v10");
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-
 let token = config.token;
 
 client.commands = new Collection();
@@ -61,42 +54,7 @@ const log = (x) => {
   console.log(`[${moment().format("DD-MM-YYYY HH:mm:ss")}] ${x}`);
 };
 
-//Express Form
-const CHANNEL_ID = "1228319861529247796";
-
-// Middleware to parse JSON bodies
-app.use(bodyParser.json());
-
-// Serve static files from the 'public' directory
-app.use(express.static("public"));
-
-// Route to serve the form
-app.get("/form", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
-app.post("/submit", async (req, res) => {
-  const { name, message } = req.body;
-
-  try {
-    const channel = await client.channels.fetch(CHANNEL_ID);
-    await channel.send(`**Name:** ${name}\n**Message:** ${message}`);
-    res
-      .status(200)
-      .json({ success: true, message: "Message sent to Discord!" });
-  } catch (error) {
-    console.error("Error sending message to Discord:", error);
-    res
-      .status(500)
-      .json({ success: false, message: "Error sending message to Discord" });
-  }
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
-
-//command-handler
+// command-handler
 const commands = [];
 readdirSync("./src/commands/normal").forEach(async (file) => {
   const command = await require(`./src/commands/normal/${file}`);
@@ -111,7 +69,7 @@ readdirSync("./src/commands/normal").forEach(async (file) => {
   }
 });
 
-//slash-command-handler
+// slash-command-handler
 const slashcommands = [];
 readdirSync("./src/commands/slash").forEach(async (file) => {
   const command = await require(`./src/commands/slash/${file}`);
@@ -137,7 +95,7 @@ client.on(Events.ClientReady, async () => {
   log(`${client.user.username} is now Ready!`);
 });
 
-//event-handler
+// event-handler
 readdirSync("./src/events").forEach(async (file) => {
   const event = await require(`./src/events/${file}`);
   if (event.once) {
@@ -147,11 +105,11 @@ readdirSync("./src/events").forEach(async (file) => {
   }
 });
 
-const { startPlayerTracking } = require("./src/events/samp_test.js");
+const { startPlayerTracking } = require("./src/events/project_rana.js");
 
 startPlayerTracking(client);
 
-//nodejs-listeners
+// nodejs-listeners
 process.on("unhandledRejection", (e) => {
   console.log(e);
 });

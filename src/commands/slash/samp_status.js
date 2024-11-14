@@ -47,13 +47,18 @@ module.exports = {
 
     const options = { host, port: parseInt(port) };
 
-    await samp(options, (error, query) => {
-      if (error) {
-        console.error(error);
-        return interaction.reply(
-          "An error occurred while fetching server information."
-        );
-      }
+    // Wrap samp query in a promise to use it with await
+    const queryServer = (options) => {
+      return new Promise((resolve, reject) => {
+        samp(options, (error, query) => {
+          if (error) reject(error);
+          else resolve(query);
+        });
+      });
+    };
+
+    try {
+      const query = await queryServer(options);
 
       if (!query || !query.hostname) {
         return interaction.reply("Unable to retrieve server information.");
@@ -70,27 +75,26 @@ module.exports = {
           "https://media1.tenor.com/m/1DEj-XNoEO8AAAAC/gta-online-mmi.gif"
         )
         .setColor(color)
-        .setTitle(`**${query["hostname"]}**`);
+        .setTitle(`**${query.hostname}**`);
 
-      if (query["online"] > 0) {
+      if (query.online > 0) {
         let friendsTable = "ID | NICK\n---|----\n";
         let playersTable = "ID | NICK\n---|----\n";
-        let playersTable2 = "";
-        let playersTable3 = "";
-        let playersTable4 = "";
-        let playersTable5 = "";
+        let playersTable2 = "",
+          playersTable3 = "",
+          playersTable4 = "",
+          playersTable5 = "";
 
-        if (query["online"] > 20) playersTable2 = "ID | NICK\n---|----\n";
-        if (query["online"] > 40) playersTable3 = "ID | NICK\n---|----\n";
-        if (query["online"] > 60) playersTable4 = "ID | NICK\n---|----\n";
-        if (query["online"] > 80) playersTable5 = "ID | NICK\n---|----\n";
+        if (query.online > 20) playersTable2 = "ID | NICK\n---|----\n";
+        if (query.online > 40) playersTable3 = "ID | NICK\n---|----\n";
+        if (query.online > 60) playersTable4 = "ID | NICK\n---|----\n";
+        if (query.online > 80) playersTable5 = "ID | NICK\n---|----\n";
 
-        for (let i = 0; i < query["players"].length; i++) {
-          const player = query["players"][i];
-          const row = `${player["id"]} | ${player["name"]}\n`;
+        query.players.forEach((player, i) => {
+          const row = `${player.id} | ${player.name}\n`;
           const tableIndex = Math.floor(i / 20);
 
-          if (friends.includes(player["name"])) {
+          if (friends.includes(player.name)) {
             friendsTable += row;
           } else {
             switch (tableIndex) {
@@ -111,7 +115,7 @@ module.exports = {
                 break;
             }
           }
-        }
+        });
 
         if (friendsTable.split("\n").length > 3) {
           embed.addFields({
@@ -121,34 +125,39 @@ module.exports = {
         }
 
         embed.addFields({
-          name: `${query["online"]}/${query["maxplayers"]}`,
+          name: `${query.online}/${query.maxplayers}`,
           value: "```\n" + playersTable + "```",
         });
-        if (query["online"] > 20)
+        if (query.online > 20)
           embed.addFields({
             name: "\u200B",
             value: "```\n" + playersTable2 + "```",
           });
-        if (query["online"] > 40)
+        if (query.online > 40)
           embed.addFields({
             name: "\u200B",
             value: "```\n" + playersTable3 + "```",
           });
-        if (query["online"] > 60)
+        if (query.online > 60)
           embed.addFields({
             name: "\u200B",
             value: "```\n" + playersTable4 + "```",
           });
-        if (query["online"] > 80)
+        if (query.online > 80)
           embed.addFields({
             name: "\u200B",
             value: "```\n" + playersTable5 + "```",
           });
-      } else if (query["online"] == 0) {
+      } else {
         embed.addFields({ name: "PLAYERS LIST", value: "*Server is empty*" });
       }
 
       return interaction.reply({ embeds: [embed] });
-    });
+    } catch (error) {
+      console.error("Error fetching server information:", error);
+      return interaction.reply(
+        "An error occurred while fetching server information."
+      );
+    }
   },
 };
