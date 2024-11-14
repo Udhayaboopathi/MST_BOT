@@ -13,9 +13,8 @@ module.exports = {
         .setRequired(true)
         .addChoices(
           { name: "kdm", value: "148.113.8.240:1111" },
-          { name: "iurp", value: "51.79.144.255:7777" },
-          { name: "acrp", value: "103.214.23.55:7788" },
-          { name: "legendary_rp", value: "103.214.23.55:7782" }
+          { name: "iurp", value: "15.235.141.203:7777" },
+          { name: "acrp", value: "15.235.209.107:7788" }
         )
     ),
   run: async (client, interaction) => {
